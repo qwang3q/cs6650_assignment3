@@ -1,12 +1,14 @@
 package server;
 
 import com.google.gson.Gson;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.*;
 
 import databaseUtils.LiftRidesDao;
@@ -18,24 +20,26 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "SkierServlet")
+@WebServlet(name = "SkierServlet", value = "/skiers/*")
 public class SkierServlet extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(SkierServlet.class.getName());
+
     protected LiftRidesDao liftRidesDao;
-    final static Logger logger = Logger.getLogger(ResortServlet.class);
+//    final static Logger logger = Logger.getLogger(ResortServlet.class);
 
     public void init() throws ServletException {
         liftRidesDao = LiftRidesDao.getInstance();
     }
     protected void doPost(HttpServletRequest request, HttpServletResponse res) throws ServletException, IOException {
-        String recordPath = (String)getServletContext().getAttribute("skierPostStatPath");
-        long startTime = System.currentTimeMillis();
+//        String recordPath = (String)getServletContext().getAttribute("skierPostStatPath");
+//        long startTime = System.currentTimeMillis();
 
         BufferedReader reader = request.getReader();
         String jsonString = "";
         try {
             for (String line; (line = reader.readLine()) != null; jsonString += line);
         } catch(IOException e) {
-            logger.error(e);
+//            logger.error(e);
         }
 
         LiftRide liftRide = new LiftRide();
@@ -43,7 +47,7 @@ public class SkierServlet extends HttpServlet {
         try {
             liftRide = parseBody(jsonString);
         } catch (InvalidParameterException e) {
-            logger.debug("Recevied invalid inputs");
+//            logger.debug("Recevied invalid inputs");
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             res.getWriter().write("{\"message\": \"Invalid inputs\"}");
             return;
@@ -66,21 +70,20 @@ public class SkierServlet extends HttpServlet {
                 res.setStatus(HttpServletResponse.SC_CREATED);
                 res.getWriter().write("{\"message\": \"ok\"}");
             } catch (SQLException e) {
-                logger.error(e);
+//                logger.error(e);
             }
         }
 
-        try {
-            logger.info("writing file");
-            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
-        } catch (IOException ioExp) {
-            logger.error(ioExp);
-        }
+//        try {
+//            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
+//        } catch (IOException ioExp) {
+////            logger.error(ioExp);
+//        }
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String recordPath = (String)getServletContext().getAttribute("skierGetStatPath");
-        long startTime = System.currentTimeMillis();
+//        String recordPath = (String)getServletContext().getAttribute("skierGetStatPath");
+//        long startTime = System.currentTimeMillis();
 
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");
@@ -102,11 +105,12 @@ public class SkierServlet extends HttpServlet {
                 try {
                     skierVertical = liftRidesDao.getTotalVertical(skierId, resortId, seasonId);
                 } catch (SQLException e) {
-                    logger.error(e);
+//                    logger.error(e);
                 }
 
                 res.getWriter().write(new Gson().toJson(skierVertical));
             } else {
+                 // urlPath  = "/{resortID}/seasons/{seasonID}/days/{dayID}/skiers/{skierID}"
                 int resortId = Integer.valueOf(urlParts[1]);
                 int seasonId = Integer.valueOf(urlParts[3]);
                 int dayId = Integer.valueOf(urlParts[5]);
@@ -123,12 +127,14 @@ public class SkierServlet extends HttpServlet {
             res.getWriter().write("{\"message\": \"not found\"}");
         }
 
-        try {
-            logger.info("writing file");
-            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
-        } catch (IOException ioExp) {
-            logger.error(ioExp);
-        }
+//        try {
+////            logger.info("writing file");
+//            long duration = System.currentTimeMillis() - startTime;
+//            System.out.println(String.format("get operatation take %d time", duration));
+//            Stat.appendFile(recordPath, duration);
+//        } catch (IOException ioExp) {
+////            logger.error(ioExp);
+//        }
     }
 
 

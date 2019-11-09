@@ -2,7 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -17,10 +17,10 @@ import databaseUtils.StatsDao;
 import io.swagger.client.model.APIStats;
 import io.swagger.client.model.APIStatsEndpointStats;
 
-@WebServlet(name = "StatServlet")
+@WebServlet(name = "StatServlet", value = "/statistics/*")
 public class StatServlet extends HttpServlet {
     protected StatsDao statsDao;
-    final static Logger logger = Logger.getLogger(StatServlet.class);
+//    final static Logger logger = Logger.getLogger(StatServlet.class);
 
     public void init() throws ServletException {
         statsDao = StatsDao.getInstance();
@@ -49,7 +49,7 @@ public class StatServlet extends HttpServlet {
                 }
             }
         } catch (SQLException e) {
-            logger.error(e);
+//            logger.error(e);
         }
         res.getWriter().write(new Gson().toJson(apiStats));
     }

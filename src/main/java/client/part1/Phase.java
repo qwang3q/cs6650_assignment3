@@ -1,7 +1,5 @@
 package client.part1;
 
-import org.apache.log4j.Logger;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -15,7 +13,6 @@ import io.swagger.client.api.SkiersApi;
 import io.swagger.client.model.LiftRide;
 
 public class Phase {
-    final static Logger logger = Logger.getLogger(Phase.class);
 
     public ExecutorService workerThreadsPool;
     private CountDownLatch latch;
@@ -79,7 +76,6 @@ public class Phase {
     }
 
     public void start() {
-//        System.out.println("Start phase at: " + String.valueOf(System.currentTimeMillis()));
         for(int i = 0; i < this.numThreads; i++) {
             int[] boundaries = getBoundaries(numSkiers, numThreads, i);
             Runnable runner = () -> {
@@ -118,10 +114,7 @@ public class Phase {
                             }
                             inserted = true;
                         } catch (ApiException e) {
-//                            failedCount++;
                               responseCode = e.getCode();
-//                        logger.error("request failed at: " +  String.valueOf(System.currentTimeMillis()) + "  " + e.getMessage());
-//                            inserted = false;
                         }
                     }
 
@@ -133,60 +126,6 @@ public class Phase {
                     if (!inserted) {
                         failedCount++;
                     }
-
-
-
-
-
-
-
-//                    try{
-//                        ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(
-//                            liftRide, 1, "2019", "1", skierId);
-//                        responseCode = response.getStatusCode();
-//                        if (this.sendGetRequest) {
-//                            apiInstance.getSkierDayVertical(1, "2019", "1", skierId);
-//                        }
-//                    } catch (ApiException e) {
-//                        failedCount++;
-////                        responseCode = e.getCode();
-////                        logger.error("request failed: " + e.getMessage());
-//
-//                    } finally {
-//                        if (this.traceLatency) {
-//                            addRecord(postStartTime, "post",
-//                                System.currentTimeMillis() - postStartTime, responseCode);
-//                        }
-//                        totalCount++;
-//                    }
-
-
-//
-//                    boolean inserted = false;
-//                    while (!inserted) {
-//                        try{
-//                            ApiResponse response = apiInstance.writeNewLiftRideWithHttpInfo(
-//                                liftRide, 1, "2019", "1", skierId);
-//                            responseCode = response.getStatusCode();
-//                            if (this.sendGetRequest) {
-//                                apiInstance.getSkierDayVertical(1, "2019", "1", skierId);
-//                            }
-//                            inserted = true;
-//                            if (this.traceLatency) {
-//                                addRecord(postStartTime, "post",
-//                                    System.currentTimeMillis() - postStartTime, responseCode);
-//                            }
-//                            totalCount++;
-//                        } catch (ApiException e) {
-//                            inserted = false;
-////                            failedCount++;
-////                        responseCode = e.getCode();
-////                        logger.error("request failed: " + e.getMessage());
-//
-//                        }
-//                    }
-
-
                 }
                 this.tenPercentLatch.countDown();
                 this.latch.countDown();

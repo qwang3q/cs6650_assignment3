@@ -9,32 +9,30 @@ import com.google.gson.Gson;
 
 import databaseUtils.ResortsDao;
 import io.swagger.client.model.*;
-
-import org.apache.log4j.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "ResortServlet")
+@WebServlet(name = "ResortServlet", value = "/resorts/*")
 public class ResortServlet extends HttpServlet {
     protected ResortsDao resortsDao;
-    final static Logger logger = Logger.getLogger(ResortServlet.class);
 
     public void init() throws ServletException {
         resortsDao = ResortsDao.getInstance();
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String recordPath = (String)getServletContext().getAttribute("resortPostStatPath");
-        long startTime = System.currentTimeMillis();
+//        String recordPath = (String)getServletContext().getAttribute("resortPostStatPath");
+//        long startTime = System.currentTimeMillis();
+
         BufferedReader reader = req.getReader();
         String jsonString = "";
         try {
             for (String line; (line = reader.readLine()) != null; jsonString += line);
         } catch (IOException e) {
-            logger.error(e);
+//            logger.error(e);
         }
 
         int season = -1;
@@ -42,7 +40,7 @@ public class ResortServlet extends HttpServlet {
         try {
             season = parseBody(jsonString);
         } catch (InvalidParameterException e) {
-            logger.debug("Recevied invalid inputs");
+//            logger.debug("Recevied invalid inputs");
             res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             res.getWriter().write("{\"message\": \"Invalid inputs\"}");
             return;
@@ -67,21 +65,22 @@ public class ResortServlet extends HttpServlet {
                 res.getWriter().write("{\"message\": \"ok\"}");
                 }
             } catch (SQLException e) {
-                logger.error(e);
+//                logger.error(e);
             }
         }
 
-        try {
-            logger.info("writing file");
-            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
-        } catch (IOException ioExp) {
-            logger.error(ioExp);
-        }
+//        try {
+////            logger.info("writing file");
+//            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
+//        } catch (IOException ioExp) {
+////            logger.error(ioExp);
+//        }
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
-        String recordPath = (String)getServletContext().getAttribute("resortGetStatPath");
-        long startTime = System.currentTimeMillis();
+//        String recordPath = (String)getServletContext().getAttribute("resortGetStatPath");
+//        long startTime = System.currentTimeMillis();
+
         res.setContentType("application/json");
         res.setCharacterEncoding("UTF-8");
         String urlPath = req.getPathInfo();
@@ -92,7 +91,7 @@ public class ResortServlet extends HttpServlet {
             try {
                 resortsList = resortsDao.getAllResorts();
             } catch (SQLException e) {
-                logger.error(e);
+//                logger.error(e);
             }
             res.getWriter().write(new Gson().toJson(resortsList));
         } else if (isUrlValid(urlPath)) { // seasons
@@ -109,19 +108,19 @@ public class ResortServlet extends HttpServlet {
                     res.getWriter().write(new Gson().toJson(seasonsList));
                 }
             } catch (SQLException e) {
-                logger.error(e);
+//                logger.error(e);
             }
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);
             res.getWriter().write("{\"message\": \"not found\"}");
         }
 
-        try {
-            logger.info("writing file");
-            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
-        } catch (IOException ioExp) {
-            logger.error(ioExp);
-        }
+//        try {
+////            logger.info("writing file");
+//            Stat.appendFile(recordPath, System.currentTimeMillis() - startTime);
+//        } catch (IOException ioExp) {
+////            logger.error(ioExp);
+//        }
     }
 
     private boolean isUrlValid(String urlPath) {

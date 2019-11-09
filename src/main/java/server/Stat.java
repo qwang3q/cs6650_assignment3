@@ -49,9 +49,9 @@ public class Stat {
 
             // Update mean and max of latest 1000 operations, if less than 1000 returns all
             int sum = 0;
-            int leng = this.responseDurations.size();
-            int size = leng < 1000 ? leng : 1000;;
-            for(int i = leng - 1; i > leng - 1 - size; i--) {
+            int len = this.responseDurations.size();
+            int size = len < 1000 ? len : 1000;;
+            for(int i = len - 1; i > len - 1 - size; i--) {
                 sum = sum + this.responseDurations.get(i);
                 if (this.responseDurations.get(i) > max) {
                     this.setMax(this.responseDurations.get(i));

@@ -3,7 +3,6 @@ package server;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.UUID;
 
 import java.util.concurrent.ScheduledExecutorService;
@@ -13,13 +12,15 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-
-import databaseUtils.ResortsDao;
 import databaseUtils.StatsDao;
+import javax.servlet.annotation.WebListener;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
+//@WebListener("Creates a connection pool that is stored in the Servlet's context for later use.")
 public class StatisticOperator implements ServletContextListener {
+    private static final Logger LOGGER = Logger.getLogger(StatisticOperator.class.getName());
+
     // A random key as key in database for identifying the row responsible for current server
     private String uuid;
     // Shared filepath for recording response durations
@@ -31,6 +32,8 @@ public class StatisticOperator implements ServletContextListener {
     private ScheduledExecutorService scheduler;
 
     public void contextInitialized(ServletContextEvent e) {
+        System.out.println("starting context listener");
+        LOGGER.log(Level.WARNING, "starting context listener");
         ServletContext cntxt = e.getServletContext();
 
         uuid = UUID.randomUUID().toString();
@@ -40,6 +43,7 @@ public class StatisticOperator implements ServletContextListener {
             skierGetStatPath = File.createTempFile(uuid + "_skier_get", null).getAbsolutePath();
             skierPostStatPath = File.createTempFile(uuid + "_skier_post", null).getAbsolutePath();
         } catch (IOException ioErr) {
+            System.out.println("Encounter IO error, quite context");
             ioErr.printStackTrace();
             return;
         }
@@ -98,10 +102,17 @@ public class StatisticOperator implements ServletContextListener {
             }) {
                 stat.loadFromFile();
 
+                LOGGER.log(Level.WARNING, "before trying updating stats");
+
                 // Write uuid, count, mean, max, server, operation in database
                 try {
                     statsDao.updateStat(this.uuid, stat);
+                    LOGGER.log(Level.WARNING, "successfully updated stats");
                 } catch (SQLException e) {
+                    LOGGER.log(Level.WARNING, "failed updating stats with SQLException");
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    LOGGER.log(Level.WARNING, "failed updating stats with other exception");
                     e.printStackTrace();
                 }
             }
