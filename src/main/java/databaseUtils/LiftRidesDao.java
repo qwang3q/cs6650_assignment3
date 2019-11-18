@@ -16,7 +16,7 @@ public class LiftRidesDao {
     // Single pattern: instantiation is limited to one object.
     private static LiftRidesDao instance = null;
     protected LiftRidesDao() {
-        connectionManager = new ConnectionManager();
+        connectionManager = ConnectionManager.getInstance();
     }
     public static LiftRidesDao getInstance() {
         if(instance == null) {

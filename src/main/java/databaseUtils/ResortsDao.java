@@ -15,7 +15,7 @@ public class ResortsDao {
     // Single pattern: instantiation is limited to one object.
     private static ResortsDao  instance = null;
     protected ResortsDao () {
-        connectionManager = new ConnectionManager();
+        connectionManager = ConnectionManager.getInstance();
     }
     public static ResortsDao  getInstance() {
         if(instance == null) {

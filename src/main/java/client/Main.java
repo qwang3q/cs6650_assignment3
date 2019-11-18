@@ -9,7 +9,8 @@ public class Main {
         // GCP APP Engine server
         String basePath = "https://cs6650-258222.appspot.com";
 
-        int[] numThreadArray = new int[] {32, 64, 128, 256};
+//        int[] numThreadArray = new int[] {32, 64, 128, 256};
+        int[] numThreadArray = new int[] {256};
         int numSkiers = 20000;
         int numLifts = 40;
         int numRuns = 20;

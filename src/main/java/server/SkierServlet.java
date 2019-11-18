@@ -121,6 +121,7 @@ public class SkierServlet extends HttpServlet {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
+
             }
         } else {
             res.setStatus(HttpServletResponse.SC_NOT_FOUND);

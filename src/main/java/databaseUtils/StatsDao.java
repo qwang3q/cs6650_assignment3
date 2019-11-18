@@ -11,7 +11,7 @@ public class StatsDao {
     // Single pattern: instantiation is limited to one object.
     private static StatsDao instance = null;
     protected StatsDao() {
-        connectionManager = new ConnectionManager();
+        connectionManager = ConnectionManager.getInstance();
     }
     public static StatsDao getInstance() {
         if(instance == null) {
